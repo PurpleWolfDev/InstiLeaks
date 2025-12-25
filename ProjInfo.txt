@@ -1,0 +1,123 @@
+🏴 PROJECT NAME (Working Title)
+
+Rebel / InstiPulse / Halla / Rizzfeed / The Loop
+(final name can be decided later)
+
+🎯 CORE IDEA (1-LINER)
+
+A dark, chaotic, IIT-only social platform for memes, polls, confessions, rumors, and roast battles — built for Gen-Z campus culture, not corporate bullshit.
+
+⚡ CORE VALUES
+
+Real > Polished
+
+Fun > Formal
+
+Insider jokes > Official announcements
+
+Chaos, but safe chaos
+
+🧠 THEME & EMOTIONAL TONE
+
+Underground
+
+Meme-native
+
+Rebellious
+
+College gossip energy
+
+“Real IIT internet. Not InstiApp.”
+
+🎨 FINALIZED BRAND COLOR PALETTE (LOCKED)
+#181818 (Black Base / Background)
+#6A2BED (Brand Purple / Primary)
+#FF3366 (Rebel Pink / Highlights + Upvotes)
+#00E676 (Neon Green / Online + Success)
+#F5F5F5 (Text on dark)
+
+
+💡 The palette screams: fun, edgy, youthful, not official, not boring.
+
+📱 CORE FEATURES (FINAL)
+Posting System
+
+✔ Memes (image + caption)
+✔ Text posts
+✔ Multimedia posts
+✔ Polls
+✔ Rumors / Confessions category
+✔ Public vs anonymous toggle
+✔ Roast battle format (post vs post voting)
+
+Social Interaction
+
+✔ Upvotes/downvotes
+✔ Comments
+✔ Reaction emojis (🔥 💀 😂 🤡 🧠 etc.)
+✔ Leaderboards (daily, weekly, monthly)
+✔ Badges (viral post, roast master, clown, etc.)
+
+Feed
+
+📌 Home (algorithmic + latest)
+📌 Trending (heat-based ranking via Redis)
+📌 Explore (random/suggested)
+📌 Categories / tags (#hostel16 #moodindrome etc.)
+
+Identity System
+
+✔ Public profile & anonymous mode
+✔ Anonymous usernames auto-gen (“purple tiger”, “spicy crow”)
+✔ Avatar customization
+✔ Reputation / karma
+
+Social Utilities
+
+✔ DMs (non-anonymous)
+✔ Group chats (optional future)
+✔ Meme template library (future)
+
+🔐 MODERATION
+
+AI + keyword filtering (hate, doxxing)
+
+Report system
+
+Shadowbans
+
+Timeout for toxic behavior
+
+Admin dashboard for verification
+
+Optional “safety mode”
+
+⚠️ NO REAL NAME EXPOSED even if anonymous
+⚠️ No admin can see user identity for anonymous posts
+
+🧱 FINALIZED TECH STACK (LOCKED)
+Frontend
+
+React + Vite
+
+Tailwind CSS
+
+Redux Toolkit
+
+Optional: ShadCN UI, Framer Motion
+
+Backend
+
+Node.js
+
+Express
+
+MongoDB (Mongoose)
+
+Redis (rate limits, trends, sessions, feeds)
+
+Socket.io / WebSockets for realtime
+
+Cloudinary for image uploads/CDN
+
+JWT Auth (w/ anonymous mode)

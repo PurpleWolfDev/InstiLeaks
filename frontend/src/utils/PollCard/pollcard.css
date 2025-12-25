@@ -1,0 +1,74 @@
+.__pollCard_container{
+    background: rgba(255, 255, 255, 0.01);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  display: flex;
+  /* max-height: 600px; */
+  max-height: 600px;
+  /* padding-bottom: 20px; */
+  position: relative;
+  /* align-items: center;  */
+  min-height: 200px;
+  /* justify-content: center;
+  /* padding-bottom:30px; */
+  flex-direction: column;
+  /* padding: 24px; */
+  padding-bottom:30px;
+  /* padding-left:30px; */
+  margin: 20px;
+  width: 90%;
+  /* padding-right:30px; */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.__card_changeBg{
+    background: transparent;
+    border: none;
+    display: block;
+}
+.__card_options{
+    min-height: 50px;
+    padding:10px;
+    width:95%;
+    margin-left: 5px;
+    background: #282828;
+    border-radius: 5px;
+    margin-top:20px;
+    display: flex;
+    align-items: center;
+    justify-content: baseline;
+    padding-left: 15px;
+    color:white;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+
+.__card_selected{
+  background: #353535;
+  transition-duration: .2s;
+}
+
+.__cardAnimateOption{
+  animation: winnerPulse 1.5s infinite;
+}
+
+@keyframes winnerPulse {
+  0% { box-shadow: 0 0 0 rgba(106, 43, 237, 0.0); }
+  50% { box-shadow: 0 0 12px rgba(106, 43, 237, 0.6); }
+  100% { box-shadow: 0 0 0 rgba(106, 43, 237, 0.0); }
+}
+
+
+@keyframes microBounce {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.03); }
+  70% { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+
+.__card_optionClicked {
+  animation: microBounce 0.25s ease-out;
+}

@@ -1,0 +1,8 @@
+backend/node_modules
+backend/*.zip
+frontend/node_modules
+frontend/*.zip
+uploader-microservice/node_modules
+uploader-microservice/*.zip
+uploader-microservice/.env
+backend/.env

@@ -1,0 +1,38 @@
+.__splash_container {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    background-color: #000;
+    background-image: url('./../../src/assets/general/splashScreen.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    opacity:0.1;
+    animation: fadein 1s ease forwards;
+}
+
+@keyframes fadein {
+    10%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+.__splash_logoName{
+    color:#6a2bed;
+    font-size: 50px !important;
+    font-weight: 700;
+}
+
+.__splash_tagline {
+    color:white;
+    font-weight: 500;
+    margin-top:20px;
+    font-size: 16px;
+}
