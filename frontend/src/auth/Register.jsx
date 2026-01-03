@@ -59,7 +59,7 @@ export const Register = () => {
             updateLoading(true);
             let resul = await axios.post(`http://127.0.0.1:8080/auth/user/createUserAccount`, data);
             let result = resul.data;
-            console.log(result)
+            //console.log(result)
             updateLoading(false);
             if(result.status == 200) {
                 t.current = 300;
@@ -83,7 +83,7 @@ export const Register = () => {
             }
         }
         } catch(err) {
-            console.log(err)
+            //console.log(err)
             toast("Something exploded behind the scenes. Please restart the app",{
             duration: 4000,
             position: 'top-center',
@@ -105,8 +105,8 @@ export const Register = () => {
                 duration: 4000,
                 position: 'top-center',
                 icon: '✅'});
-                console.log(result.data);
-                console.log(result);
+                //console.log(result.data);
+                //console.log(result);
                 localStorage.setItem("data", JSON.stringify(result.data));
                 localStorage.setItem("token", result.jwtToken);
                 setTimeout(() => {navigate("/home");}, 1000);

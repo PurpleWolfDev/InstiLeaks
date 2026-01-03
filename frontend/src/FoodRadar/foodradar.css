@@ -1,0 +1,8 @@
+.__food_underConstruction{
+    height: 100vh;
+    width: 100vw;
+    background: url('./../assets/radar.png');
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}

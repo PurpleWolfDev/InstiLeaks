@@ -11,11 +11,15 @@ import { Loader } from "../utils/Loader/Loader.jsx";
 import { Polls } from "./Polls.jsx";
 import { Pagination } from "../utils/Pagination/Pagination.jsx";
 import { Comment } from "../utils/Comments/Comment.jsx";
+import { verifyUser } from "../utils/UserAuth/verifyUser.js";
+import { ImageView } from "../utils/ImageView/ImageView.jsx";
 export const Home = () => {
     const [tabNo, updateTab] = useState(0);
     const visibleState = useSelector(state => state.comment.display);
     const dispatch = useDispatch();
-
+    useEffect(() => {
+        verifyUser();
+    }, []);
     const switchGeneral = () => {
         dispatch(toggleLoading({isLoading:true}));
         setTimeout(() => {
@@ -61,6 +65,7 @@ export const Home = () => {
         <Loader />
         <Pagination currentPage={0}/>
         {visibleState?<Comment />:null}
+        <ImageView />
       </>
     );
 };

@@ -5,6 +5,9 @@ import { toggleReport } from "../../store/slices/reportSlice";
 import {MdReportProblem} from 'react-icons/md';
 import axios from "axios";
 import {FaRegComment} from 'react-icons/fa';
+import { invokeShare } from "../invokeShare/invokeShare";
+import { updateReportId } from "../../store/slices/reportSlice";
+import { toggleImage } from "../../store/slices/imageSlice";
 import {toggleLoading} from './../../store/slices/loaderSlice';
 import {IoMdShareAlt} from 'react-icons/io'
 import { toggleComment } from "../../store/slices/commentSlice";
@@ -21,7 +24,6 @@ export const PollCard = ({car}) => {
     const [optSel, updateSel] = useState([-1,0]);                                                                                                                                                                                  
     const getPastTime = (timeStamp) => {
         timeStamp = new Date(timeStamp).getTime();
-        console.log(timeStamp);
         const now = Date.now();
   const seconds = Math.floor((now - timeStamp) / 1000);
       useEffect(() => {
@@ -101,10 +103,8 @@ export const PollCard = ({car}) => {
             cardRef.current.poll.options[index].votes -= 1;
             updateCard({...cardRef.current});
             updateOpt(null);
-            console.log("THIS CASE")
           }
           else {
-            console.log(cardRef.current.poll)
             cardRef.current.poll.selectedOption = index;
             // cardRef.current.poll.totalVotes += 1;
             cardRef.current.poll.options[index].votes += 1;
@@ -123,14 +123,13 @@ export const PollCard = ({car}) => {
     }
 
     return(
-        <>{console.log(card)}
+        <>
             {(card!=null&&card.poll)?<div key={card.postId} className="__general_eachCard" style={{paddingBottom:'10px'}}>
                 <div className="__card_header">
-                    <img className="__card_profPfp" src={card.postedBy.pfpLink!=""?card.postedBy.pfpLink:profImg} />
+                    <img onClick={() => {dispatch(toggleImage({imagePreview:card.postedBy.pfpLink!=""?card.postedBy.pfpLink:profImg}))}} className="__card_profPfp" src={card.postedBy.pfpLink!=""?card.postedBy.pfpLink:profImg} />
                     <div className="__card_nameContainer">{card.postedBy.name}</div>
                     <div className="__card_dots" onClick={() => {dispatch(updateReportId({reportId: card.postId}));dispatch(toggleReport({isReport:true}))}}><MdReportProblem  /></div>
                 </div>
-                {console.log(card)}
                 <div className="__card_titleContainer">{card.poll.question}</div>
                 <div className="__card_attachmentContainer __card_changeBg">
                     {card.poll.options.map((e, index) => {
@@ -141,9 +140,9 @@ export const PollCard = ({car}) => {
                 <div className="__card_reactions">
                     <div className="__card_timeAgo" style={{maxWidth:'200px', display:'flex', flexWrap:'wrap', marginLeft:'5px'}}>{getPastTime(card.createdAt)} &nbsp;&#8226;&nbsp; {card.poll.totalVotes} votes</div>
                     <div className={"__card_eachReaction __card_share2"}  onClick={() => {dispatch(toggleComment({display:true, postId:card.postId}))}}><FaRegComment size={22} /><p style={{fontSize:'10px', color:'white', marginTop:'5px', fontWeight:500}}>{card.commentsCount}</p></div>
-                    <div className={"__card_eachReaction __card_share"}><IoMdShareAlt size={25} /><p style={{fontSize:'10px', color:'white', marginTop:'5px', fontWeight:500}}>{card.shareCount}</p></div>
+                    <div onClick={() => {invokeShare({name:card?.postedBy.name, url:`http://localhost:5173/post?ref=${card.postId}&t=pl`})}} className={"__card_eachReaction __card_share"}><IoMdShareAlt size={25} /><p style={{fontSize:'10px', color:'white', marginTop:'5px', fontWeight:500}}></p></div>
                 </div>
-            </div>:console.log("hi")}
+            </div>:null}
         </>
     );
 };

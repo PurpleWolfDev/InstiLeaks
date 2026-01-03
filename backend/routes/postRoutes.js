@@ -3,12 +3,13 @@ require("dotenv").config({
 });
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const mongoose = require("mongoose")
 const express = require("express");
 const jsonwebtoken = require("jsonwebtoken");
 const axios = require("axios");
 const {sendEmail} = require("../services/sendEmail.js");
 const postRoutes = express.Router();
-const {saveUser, findUser, updateUser, getPosts, findPost, updatePost, addPost, addReport, addNotifs} = require("../services/dbFuncs.js");
+const {saveUser, findUser, updateUser, getPosts, findPost, updatePost, addPost, addReport, addNotifs, findNotifs, deletePost} = require("../services/dbFuncs.js");
 const {validateFields, scanIP, checkExistingUsers, verifyJWT, scanIPv2} = require("../middlewares/middleware.js");
 const jwtKey = process.env.jwt_key;
 const rounds = Number(process.env.hashing_rounds);
@@ -27,7 +28,7 @@ postRoutes.post("/getPosts",validateFields, scanIP, verifyJWT, async(req, res) =
 
         // if((start<=postCount)) {
         if(false){
-            const data = await redis.lRange("recentPostsGeneral", start-1, end-1);
+            const data = await redis.lRange("recentPostsGeneral", 0, -1);
             const posts = data.map(p => JSON.parse(p));
             res.json({status:200, posts});
             console.log("this case is executed", start, end, postCount);
@@ -334,7 +335,179 @@ postRoutes.post("/report", validateFields, scanIP, verifyJWT, async(req, res) =>
     }   
 });
 
+postRoutes.post("/getPost",validateFields, scanIP, verifyJWT, async(req, res) => {
+    try {
+        let {start, end, type, uId, postId} = req.body;
+        let postCount = Number(await redis.get("postHashCount"));
 
+        // if((start<=postCount)) {
+        if(false){
+            const data = await redis.lRange("recentPostsGeneral", start-1, end-1);
+            const posts = data.map(p => JSON.parse(p));
+            res.json({status:200, posts});
+            console.log("this case is executed", start, end, postCount);
+        }
+        else {
+            const posts = (await getPosts(start, end, {postType:type, postId:postId})).map(post => post.toObject());
+
+            for(let i = 0;i<posts.length;i++) {
+                // yaha pe polls ka data hide karre h
+                if(posts[i].postType=='confession' && posts[i].postStatus=="private") {
+                    posts[i].postedBy = {
+                        name:' Anonymous',
+                        pfpLink : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPYwil_5qdiU4TN2v9rRra8M_HSwncYn6XRQ&s'
+                    }
+                }
+                if(posts[i].postType=="polls") {
+                    let selectedOpt = -1;
+                    for(let j = 0;j<posts[i].poll.options.length;j++) {
+                        console.log(uId, posts[i].poll.options[j].votes);
+                        if(selectedOpt==-1) {
+                            if(posts[i].poll.options[j].votes.includes(uId)) selectedOpt = j;
+                        }
+                        // selectedOpt = ((selectedOpt==-1)&&posts[i].poll.options[j].votes.includes(uId))?j:-1;
+                        posts[i].poll.options[j].votes = posts[i].poll.options[j].votes.length;
+                    }
+                    posts[i].poll.selectedOption = selectedOpt;
+                }
+                // -----------------------polls--------------
+                if(posts[i].likedBy&&posts[i].likedBy.includes(uId)) posts[i].isLiked = true;
+                else posts[i].isLiked = false;
+                if(posts[i].dislikedBy&&posts[i].dislikedBy.includes(uId)) posts[i].isDisliked = true;
+                else posts[i].isDisliked = false;
+                posts[i].likedBy = null;
+                posts[i].dislikedBy = null;
+                console.log(posts[i].isLiked)
+                posts[i].comments = null;
+            }
+            let newPosts = [];
+            for(let i = posts.length-1;i>=0;i--) {
+                newPosts[posts.length-i-1] = posts[i];
+            }
+            console.log(newPosts)
+            res.json({status:200, posts:newPosts});
+            console.log("else here")
+        }
+    } catch(err) {
+        console.log('getPosts', err);
+        res.json({status:500, msg:'error at get posts'});
+    }
+});
+
+postRoutes.get("/getNotifs", validateFields, scanIP, verifyJWT, async(req, res) => {
+    try {
+        let {_id, page} = req.query;
+        const pageSize = 20; 
+        let start = (page-1)*pageSize;
+        console.log(page, start)
+        let end = start + pageSize;
+        let notifs = (await findNotifs(_id));
+        notifs = notifs.reverse();
+        notifs = notifs.slice(start, end);
+        console.log(notifs);
+        for(let i = 0;i<notifs.length;i++) {
+            notifs[i].notifFpr = [_id];
+            notifs[i].notifFrom = false;
+        }
+        // for(let i = 0;i<comments.length;i++) {
+        //     // comments[i].commentedBy = null;
+        // }
+        res.json({status:200, notifs})
+    } catch(err) {
+        console.log(err);
+        res.json({status:500, msg:'err at fetching comments'});
+    }
+});
+
+postRoutes.post("/updatePfp", validateFields, scanIP, verifyJWT, async(req, res) => {
+    try {
+        let uId = req.body.uId;
+        let pfpLink = req.body.pfpLink.secure_url;
+        let user = (await findUser({uId:uId}))[0];
+        let result = (await updateUser({uId:uId}, {pfpLink:pfpLink}));
+        if(result.modifiedCount == 1) {
+            let data = {
+                name:user.name,
+                uId:uId,
+                gender:user.gender,
+                pfpLink:user.pfpLink,
+                bio:user.bio,
+                notificationSettings:user.notificationSettings,
+                rollNo:user.rollNo,
+                _id:user._id
+            };
+            res.json({data:data, status:200})
+        }
+        else {
+            res.json({status:500})
+        }
+    } catch(err) {
+        console.log(err);
+        res.json({status:500});
+    }
+});
+
+
+postRoutes.post("/getUserPost", validateFields, scanIP, verifyJWT, async(req, res) => {
+    try {
+        let {_id, postType, uId} = req.body;
+        const userId = new mongoose.Types.ObjectId(_id);
+        const posts = (await findPost({postType:postType, postedBy:userId})).map(post => post.toObject());
+        console.log(posts)
+
+            for(let i = 0;i<posts.length;i++) {
+                // yaha pe polls ka data hide karre h
+                if(posts[i].postType=='confession' && posts[i].postStatus=="private") {
+                    posts[i].postedBy = {
+                        name:' Anonymous',
+                        pfpLink : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPYwil_5qdiU4TN2v9rRra8M_HSwncYn6XRQ&s'
+                    }
+                }
+                if(posts[i].postType=="polls") {
+                    let selectedOpt = -1;
+                    for(let j = 0;j<posts[i].poll.options.length;j++) {
+                        console.log(uId, posts[i].poll.options[j].votes);
+                        if(selectedOpt==-1) {
+                            if(posts[i].poll.options[j].votes.includes(uId)) selectedOpt = j;
+                        }
+                        // selectedOpt = ((selectedOpt==-1)&&posts[i].poll.options[j].votes.includes(uId))?j:-1;
+                        posts[i].poll.options[j].votes = posts[i].poll.options[j].votes.length;
+                    }
+                    posts[i].poll.selectedOption = selectedOpt;
+                }
+                // -----------------------polls--------------
+                if(posts[i].likedBy&&posts[i].likedBy.includes(uId)) posts[i].isLiked = true;
+                else posts[i].isLiked = false;
+                if(posts[i].dislikedBy&&posts[i].dislikedBy.includes(uId)) posts[i].isDisliked = true;
+                else posts[i].isDisliked = false;
+                posts[i].likedBy = null;
+                posts[i].dislikedBy = null;
+                posts[i].comments = null;
+            }
+            posts.reverse();
+            res.json({status:200, posts});
+            console.log("else here")
+    } catch(err) {
+        res.json({status : 500});
+        console.log(err);
+    }
+});
+
+
+postRoutes.post("/deletePost", validateFields, scanIP, verifyJWT, async(req, res) => {
+    try {
+        let {_id, uId, postId} = req.body;
+        let userId = new mongoose.Types.ObjectId(_id);
+        let result = await deletePost({postedBy:userId, postId});
+        if(result.deletedCount==1) {
+            res.json({status: 200});
+        }
+        else {res.json({status: 400});}
+    } catch(err) {
+        console.log(err);
+        res.json({status: 500});
+    }
+})
 
 
 module.exports = {postRoutes};

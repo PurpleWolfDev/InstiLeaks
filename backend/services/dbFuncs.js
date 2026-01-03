@@ -115,6 +115,28 @@ const addNotifs = async(data) => {
         throw err;
     }
 };
+
+const findNotifs = async(_id) => {
+    try {
+        const userId = new mongoose.Types.ObjectId(_id);
+        console.log(userId)
+        let res = await Notifications.find({notifFor:userId});
+        // console.log(res)
+                //   console.log((((start-1)<0)?0:(start-1)), end-1); 
+        return res;         
+    } catch(err) {
+        throw err;
+    }
+};
+
+const deletePost = async(params) => {
+    try {
+        let res = await Posts.deleteOne(params);
+        return res;
+    } catch(err) {
+        throw err;
+    }
+}
 // const posts = [
 //   // ---------- GENERAL (7) ----------
 //   {
@@ -461,4 +483,4 @@ const addNotifs = async(data) => {
 
 // (async() => {let res = await Posts.insertMany(posts);console.log(res)})();
 // (async() => {console.log(await Posts.deleteMany())})()
-module.exports = {findUser, saveUser, updateUser, getPosts, findPost, updatePost, addPost, addReport, addNotifs};
+module.exports = {findUser, saveUser, updateUser, getPosts, findPost, updatePost, addPost, addReport, addNotifs, findNotifs, deletePost};

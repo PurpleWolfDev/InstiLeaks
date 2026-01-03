@@ -73,9 +73,9 @@ const postSchema = mongoose.Schema({
   reportedBy: [Number],
   isBanned: Boolean,
   banReason: String,
-  editedAt: Date,
-  createdAt: Date,
-  updatedAt: Date
+  editedAt: Number,
+  createdAt: Number,
+  updatedAt: Number
 });
 
 module.exports = {postSchema};

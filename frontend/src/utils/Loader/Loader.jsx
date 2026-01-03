@@ -7,7 +7,7 @@ export const Loader = () => {
     const [isLoading, updateLoading] = useState(true);
     useEffect(() => {
         updateLoading(loadState);
-        console.log("toggled")
+        //console.log("toggled")
     }, [loadState]);
 
     return(

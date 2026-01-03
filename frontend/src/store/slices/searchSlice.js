@@ -10,7 +10,7 @@ const searchSlice = createSlice({
   initialState,
   reducers: {
     searchFilter: (state, action) => {
-      console.log(action.payload);
+      //console.log(action.payload);
       state.searchParam = action.payload.query.toLowerCase();
       const query = action.payload.query.toLowerCase();
       if(action.payload?.filterTab) {

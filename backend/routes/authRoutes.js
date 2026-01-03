@@ -210,6 +210,7 @@ authRouter.post("/loginUser", validateFields, scanIP, async(req, res) => {
         if(result.length==1 && result[0].emailVerified) {
             result = result[0];
             let isMatched = await bcrypt.compare(password, result.password);
+            console.log(result)
             if(!isMatched) {
                 return res.json({status:403, msg:"wrong password"});
             }
@@ -222,7 +223,7 @@ authRouter.post("/loginUser", validateFields, scanIP, async(req, res) => {
                     uId : result.uId,
                 notificationSettings:result.notificationSettings,
                 bio:result.bio,
-                    pfpLink:result.pfpLink?result.idName:"none",
+                    pfpLink:result.pfpLink?result.pfpLink:"none",
                     _id:result._id
                 };
                 let jwtToken = jsonwebtoken.sign({name : result.name, rollNo : result.rollNo}, jwtKey);
@@ -514,6 +515,7 @@ authRouter.post("/getuserDetails", validateFields, scanIP, verifyJWT, async(req,
             res.json({status:403, msg:"bhak"});
         }
     } catch(err) {
+        console.log(err);
         res.json({status:500, err});
     }
 });

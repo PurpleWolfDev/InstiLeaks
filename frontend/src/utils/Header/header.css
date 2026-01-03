@@ -1,5 +1,5 @@
 .__header_container {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -182,6 +182,20 @@
     /* padding: 10px; */
     border-radius: 5px;
     display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.__header_leftBack{
+    height: 45px;
+    background: rgba(255, 255, 255, 0.06);border-radius: 5px;
+    position: absolute;
+    top: 7.5px;
+    left: 10px;
+    font-size: 20px;
+    color: white;
+    display: flex;
+    width: 45px;
     align-items: center;
     justify-content: center;
 }

@@ -64,7 +64,7 @@ export const Login = () => {
             }
         }
         } catch(err) {
-            console.log(err);
+            //console.log(err);
             updateLoading(false);
             toast("Something exploded behind the scenes. Please restart the app",{
             duration: 4000,

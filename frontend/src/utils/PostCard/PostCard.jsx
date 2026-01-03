@@ -1,6 +1,6 @@
 import "./../../Home/general.css";
 import React, { useEffect, useRef, useState } from 'react';
-import {MdReportProblem} from 'react-icons/md';
+import {MdHeight, MdReportProblem} from 'react-icons/md';
 import { useDispatch } from "react-redux";
 import { toggleReport, updateReportId } from "../../store/slices/reportSlice";
 import {toggleComment} from './../../store/slices/commentSlice'
@@ -9,6 +9,9 @@ import {IoMdShareAlt} from 'react-icons/io';
 import axios from "axios";
 import {FaRegComment} from 'react-icons/fa';
 import {BiUpvote, BiSolidUpvote, BiDownvote, BiSolidDownvote} from 'react-icons/bi';
+import { invokeShare } from "../invokeShare/invokeShare";
+import {toggleImage} from './../../store/slices/imageSlice';
+import { ImageView } from "../ImageView/ImageView";
 export const PostCard = ({card}) => {
     const [flag, updateFlag] = useState(0);
     const dispatch = useDispatch();
@@ -40,7 +43,7 @@ export const PostCard = ({card}) => {
         //let flag = 0; // 0 - no banner, 1 - ths much likes in past 10 minutes, 2 - trending, 3 - aag laga raha
         axios.get(`http://127.0.0.1:8080/home/user/getLastLikes?jwtToken=${localStorage.getItem("token")}&postId=${card.postId}`)
         .then(response => {
-            console.log(response.data)
+            //console.log(response.data)
             if(response.status==200){
                 countRef.current = response.data.data;
                 if(response.data.data>5 && response.data.data<=20) updateFlag(1);
@@ -50,10 +53,10 @@ export const PostCard = ({card}) => {
         })
 
     }, []);
-    console.log("flag is : "+flag);
+    //console.log("flag is : "+flag);
     const getPastTime = (timeStamp) => {
         timeStamp = new Date(timeStamp).getTime();
-        // console.log(timeStamp)
+        // //console.log(timeStamp)
         const now = Date.now();
   const seconds = Math.floor((now - timeStamp) / 1000);
 
@@ -131,7 +134,7 @@ export const PostCard = ({card}) => {
         })
         .catch(err => {throw err});
         } catch(err) {
-            console.log(err);
+            //console.log(err);
         }
     }
 
@@ -139,25 +142,26 @@ export const PostCard = ({card}) => {
         <>
             <div key={card.postId} className="__general_eachCard">
                 <div className="__card_header">
-                    <img className="__card_profPfp" src={card.postedBy.pfpLink!=""?card.postedBy.pfpLink:profImg} />
+                    <img onClick={() => {dispatch(toggleImage({imagePreview:card.postedBy.pfpLink!=""?card.postedBy.pfpLink:profImg}))}} className="__card_profPfp" src={card.postedBy.pfpLink!=""?card.postedBy.pfpLink:profImg} />
                     <div className="__card_nameContainer">{card.postedBy.name}</div>
                     <div className="__card_dots" onClick={() => {dispatch(updateReportId({reportId: card.postId}));dispatch(toggleReport({isReport:true}))}}><MdReportProblem  /></div>
                 </div>
 
                 <div className="__card_titleContainer">{card.title}</div>
-                {card.attachments.length !=0 ?<div className="__card_attachmentContainer">
-                    <Splide aria-label="My Favorite Images">
-                    {(card.attachments.map((e) => {return <SplideSlide>
-                        <img className="__card_img" src={e.secure_url} alt="Image 1"/>
+                {card.attachments.length !=0 ?
+                    <Splide className="__react_splide" aria-label="My Favorite Images">
+                    {(card.attachments.map((e) => {return <SplideSlide style={{display:'flex'}}>
+                        <div className="__card_attachmentContainer">
+                        <img onClick={() => dispatch(toggleImage({imagePreview:e.secure_url}))} className="__card_img" src={e.secure_url} alt="Image 1"/></div>
                     </SplideSlide>}))}
                     </Splide>
-                </div>:null}
+                :null}
                 <div className="__card_reactions">
                     <div onClick={() => {vote("upvote")}} className={cls1+" __card_up __card_eachReaction "+(((card.likesCount-card.dislikesCount)>=5)?"__card_highlighted":"")}>{isLiked?<BiSolidUpvote size={25} />:<BiUpvote size={25} />}<p style={{fontSize:'10px', color:'white', marginTop:'5px', fontWeight:500}}>{likesCount.current}</p>
                     </div>
                     <div onClick={() => {vote("downvote")}} className={cls2+" __card_down __card_eachReaction "+(((card.likesCount-card.dislikesCount)<=-5)?"__card_highlighted2":"")}>{isDisliked?<BiSolidDownvote size={25} />:<BiDownvote size={25} />}<p style={{fontSize:'10px', color:'white', marginTop:'5px', fontWeight:500}}>{dislikesCount.current}</p></div>
                     <div className={"__card_eachReaction __card_ex"} onClick={() => {dispatch(toggleComment({display:true, postId:card.postId}))}}><FaRegComment size={22} /><p style={{fontSize:'10px', color:'white', marginTop:'5px', fontWeight:500}}>{card.commentsCount}</p></div>
-                    <div className={"__card_eachReaction __card_share"}><IoMdShareAlt size={25} /><p style={{fontSize:'10px', color:'white', marginTop:'5px', fontWeight:500}}>{card.shareCount}</p></div>
+                    <div onClick={() => {invokeShare({name:card?.postedBy.name, url:`http://localhost:5173/post?ref=${card.postId}&t=${card.postType=="general"?"gh":(card.postType=="meme"?"m":(card.postType=="polls"?"pl":"cf"))}`})}} className={"__card_eachReaction __card_share"}><IoMdShareAlt size={25} /><p style={{fontSize:'10px', color:'white', marginTop:'5px', fontWeight:500}}></p></div>
                 </div>
                 <div className="__card_timeAgo">{getPastTime(card.createdAt)}</div>
                 {flag!=0?<>

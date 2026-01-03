@@ -4,3 +4,28 @@
   font-family: "Montserrat", sans-serif;
   box-sizing: border-box;
 }
+
+.__app{
+  display: none;
+}
+.__app2{
+  display: flex;
+  background-color: #202020;
+  display: flex;
+  font-weight: 500;
+  font-size: 24px;
+  color: white;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  justify-content: center;
+}
+
+@media screen and (max-width: 600px) {
+  .__app{
+    display: block;
+  }
+  .__app2{
+    display: none;
+  }
+}

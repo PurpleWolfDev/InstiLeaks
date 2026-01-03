@@ -21,6 +21,8 @@ import { Report } from '../utils/Report/Report';
 import { PostCard } from '../utils/PostCard/PostCard';
 import { ConfessCard } from "../utils/ConfessCard/ConfessCard";
 import { Loader } from "../utils/Loader/Loader";
+import { verifyUser } from "../utils/UserAuth/verifyUser";
+import { ImageView } from "../utils/ImageView/ImageView";
 
 export const Confession = () => {
    const cards = useSelector(state => state.search.filteredResults);
@@ -30,14 +32,15 @@ export const Confession = () => {
     const [end, updateEnd] = useState(10); 
     const [report, updateReport] = useState(false);
     const [test, updateTest] = useState(0);
-    console.log("report", reportVal)
+    //console.log("report", reportVal)
     const dispatch = useDispatch();
-    useEffect(()=> {updateReport(reportVal);console.log(reportVal)}, [reportVal])
+    useEffect(()=> {updateReport(reportVal);}, [reportVal])
     //  useEffect(() => {
     //     updateTest(test+1)
     // }, [cards]);
-    console.log(cards);
+    //console.log(cards);
     useEffect(() => {
+        verifyUser();
         dispatch(toggleLoading({isLoading:true}));
         axios.post(`http://127.0.0.1:8080/home/user/getPosts`, {jwtToken:localStorage.getItem("token"), start, end, type:'confession', uId:JSON.parse(localStorage.getItem("data")).uId})
         .then(response => {
@@ -46,7 +49,7 @@ export const Confession = () => {
             if(res.status==200) {
                 let data = res.posts;
                 // console.
-                dispatch(setBaseState({baseFeed:data}));
+                dispatch(setBaseState({baseFeed:[...data].reverse()}));
                 dispatch(filterTabs({query:'confession'}));
                 // updateCards(data)    `                                           dssssssssssssss
                 updateTest(test+1);
@@ -87,6 +90,7 @@ export const Confession = () => {
             <Pagination currentPage={1} />
             <Loader />
             {visibleState?<Comment />:null}
+            <ImageView />
         </>
     );
 }

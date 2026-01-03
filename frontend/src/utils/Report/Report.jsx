@@ -30,7 +30,7 @@ export const Report = () => {
             }
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             updateLoading(false);
             throw err;
         });

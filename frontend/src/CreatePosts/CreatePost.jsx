@@ -10,6 +10,9 @@ import { useDispatch } from 'react-redux';
 import { MdDelete } from "react-icons/md";
 import { toggleLoading } from '../store/slices/loaderSlice';
 import { Loader } from '../utils/Loader/Loader';
+import { verifyUser } from '../utils/UserAuth/verifyUser';
+import { ImageView } from '../utils/ImageView/ImageView';
+import { toggleImage } from '../store/slices/imageSlice';
 export const CreatePost = () => {
     const dispatch = useDispatch();
     const [postType, updatePostType] = useState("general");
@@ -23,11 +26,13 @@ export const CreatePost = () => {
     const [currentField, updateCurrentField] = useState(-1);
     const fieldRef = useRef(["", ""]);
     const [anonymous, updatePrivate] = useState(false);
-
+    useEffect(() => {
+        verifyUser();
+    }, []);
     const handleFileUpload = (event) => {
         const files = event.target.files;
             const file = files[0];
-            console.log(file)
+            //console.log(file)
         const fileSize = file.size / 1000000.0;
         
         if(fileSize>10) {
@@ -52,7 +57,7 @@ export const CreatePost = () => {
             icon: '❌'});
         }
     }
-    // console.log(optionValue)
+    // //console.log(optionValue)
 
     const deleteImg = (fileName) => {
         const updatedAttachments = attachments.filter((attachment) => {
@@ -81,7 +86,7 @@ export const CreatePost = () => {
     }
 
     // fieldRef.current = optionValue;
-    console.log("optionValue", optionValue)
+    //console.log("optionValue", optionValue)
     const deleteOption = (index) => {
         setTimeout(() => {
         const updatedOpt = optionValue.filter((option, i) => {
@@ -110,14 +115,24 @@ export const CreatePost = () => {
         dispatch(toggleLoading({isLoading:true}));
         axios.post(`http://127.0.0.1:8081/user/attachmentUpload`, data)
         .then(response => {
-            console.log(response.data);
+            updateTitle("");
+            //console.log(response.data);
             dispatch(toggleLoading({isLoading:false}));
             updateAttachments([]);
+            toast("Post Uploaded",{
+            duration: 4000,
+            position: 'top-center',
+            icon: '✅'});
 
         }).catch(err => {throw err;});
         } catch(err) {
-            console.log(err);
+            updateTitle("");
+            //console.log(err);
             dispatch(toggleLoading({isLoading:false}));
+            toast("Failed to upload post",{
+            duration: 4000,
+            position: 'top-center',
+            icon: '❌'});
         }
     }
     };
@@ -151,7 +166,7 @@ export const CreatePost = () => {
                                 <div className="__create_attachmentContainer">
                                 {attachments.map((e) => {
                                     if(e)
-                                    return <div className="__create_imgContainer"><img className="__create_uploadedImg" src={e.base64String} /><div className="__create_imgCut" onClick={() => {deleteImg(e.fileName)}}><RxCross2 /></div></div>
+                                    return <div className="__create_imgContainer"><img onClick={() => dispatch(toggleImage({imagePreview:e.base64String}))} className="__create_uploadedImg" src={e.base64String} /><div className="__create_imgCut" onClick={() => {deleteImg(e.fileName)}}><RxCross2 /></div></div>
                                 })}
                                 </div>
                             :null}
@@ -200,6 +215,7 @@ export const CreatePost = () => {
                 }}  
             />
             <Loader />
+            <ImageView />
         </>
     );
 };

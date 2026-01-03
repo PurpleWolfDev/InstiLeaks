@@ -5,9 +5,12 @@ import { useDispatch } from "react-redux";
 import { toggleReport } from "../../store/slices/reportSlice";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import {IoMdShareAlt} from 'react-icons/io';
+import { invokeShare } from "../invokeShare/invokeShare";
 import axios from "axios";
+import { updateReportId } from "../../store/slices/reportSlice";
 import {FaRegComment} from 'react-icons/fa';
 import { toggleComment } from "../../store/slices/commentSlice";
+import { toggleImage } from "../../store/slices/imageSlice";
 import {BiUpvote, BiSolidUpvote, BiDownvote, BiSolidDownvote} from 'react-icons/bi';
 export const ConfessCard = ({card}) => {
     const [flag, updateFlag] = useState(0);
@@ -40,7 +43,7 @@ export const ConfessCard = ({card}) => {
         //let flag = 0; // 0 - no banner, 1 - ths much likes in past 10 minutes, 2 - trending, 3 - aag laga raha
         axios.get(`http://127.0.0.1:8080/home/user/getLastLikes?jwtToken=${localStorage.getItem("token")}&postId=${card.postId}`)
         .then(response => {
-            console.log(response.data)
+            //console.log(response.data)
             if(response.status==200){
                 countRef.current = response.data.data;
                 if(response.data.data>5 && response.data.data<=20) updateFlag(1);
@@ -50,10 +53,10 @@ export const ConfessCard = ({card}) => {
         })
 
     }, []);
-    console.log("flag is : "+flag);
+    //console.log("flag is : "+flag);
     const getPastTime = (timeStamp) => {
         timeStamp = new Date(timeStamp).getTime();
-        // console.log(timeStamp)
+        // //console.log(timeStamp)
         const now = Date.now();
   const seconds = Math.floor((now - timeStamp) / 1000);
 
@@ -131,7 +134,7 @@ export const ConfessCard = ({card}) => {
         })
         .catch(err => {throw err});
         } catch(err) {
-            console.log(err);
+            //console.log(err);
         }
     }
 
@@ -139,7 +142,7 @@ export const ConfessCard = ({card}) => {
         <>
             <div key={card.postId} className="__general_eachCard">
                 <div className="__card_header">
-                    <img className="__card_profPfp" src={card.postedBy.pfpLink!=""?card.postedBy.pfpLink:profImg} />
+                    <img onClick={() => {dispatch(toggleImage({imagePreview:card.postedBy.pfpLink!=""?card.postedBy.pfpLink:profImg}))}} className="__card_profPfp" src={card.postedBy.pfpLink!=""?card.postedBy.pfpLink:profImg} />
                     <div className="__card_nameContainer">{card.postedBy.name}</div>
                     <div className="__card_dots" onClick={() => {dispatch(updateReportId({reportId: card.postId}));dispatch(toggleReport({isReport:true}))}}><MdReportProblem  /></div>
                 </div>
@@ -158,7 +161,7 @@ export const ConfessCard = ({card}) => {
                     </div>
                     <div onClick={() => {vote("downvote")}} className={cls2+" __card_down __card_eachReaction "+(((card.likesCount-card.dislikesCount)<=-5)?"__card_highlighted2":"")}>{isDisliked?<BiSolidDownvote size={25} />:<BiDownvote size={25} />}<p style={{fontSize:'10px', color:'white', marginTop:'5px', fontWeight:500}}>{dislikesCount.current}</p></div> */}
                     <div className={"__card_eachReaction __card_ex"}  onClick={() => {dispatch(toggleComment({display:true, postId:card.postId}))}}><FaRegComment size={22} /><p style={{fontSize:'10px', color:'white', marginTop:'5px', fontWeight:500}}>{card.commentsCount}</p></div>
-                    <div className={"__card_eachReaction __card_share"}><IoMdShareAlt size={25} /><p style={{fontSize:'10px', color:'white', marginTop:'5px', fontWeight:500}}>{card.shareCount}</p></div>
+                    <div onClick={() => {invokeShare({name:card?.postedBy.name, url:`http://localhost:5173/post?ref=${card.postId}&t=cf`})}} className={"__card_eachReaction __card_share"}><IoMdShareAlt size={25} /><p style={{fontSize:'10px', color:'white', marginTop:'5px', fontWeight:500}}></p></div>
                 </div>
                 <div className="__card_timeAgo">{getPastTime(card.createdAt)}</div>
             </div>

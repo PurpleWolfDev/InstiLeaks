@@ -13,6 +13,7 @@
     "@chakra-ui/react": "^3.30.0",
     "@reduxjs/toolkit": "^2.11.0",
     "@splidejs/react-splide": "^0.7.12",
+    "axios": "^1.13.2",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-hot-toast": "^2.6.0",

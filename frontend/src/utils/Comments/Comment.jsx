@@ -63,7 +63,7 @@ if(response.data.comments.length==0) updateMore(false);
             })
             .catch(err => {throw err;});
     } catch(err) {
-        console.log(err);
+        //console.log(err);
         dispatch(toggleLoading({isLoading:false}));
     }
     }, [visibleState]);
@@ -71,7 +71,7 @@ if(response.data.comments.length==0) updateMore(false);
 
     const getPastTime = (timeStamp) => {
         timeStamp = new Date(timeStamp).getTime();
-        // console.log(timeStamp)
+        // //console.log(timeStamp)
         const now = Date.now();
   const seconds = Math.floor((now - timeStamp) / 1000);
 
@@ -114,7 +114,7 @@ if(response.data.comments.length==0) updateMore(false);
         if(response.data.status==200) {
             updateComments([...comments, ...response.data.comments]);
             updatePage(page+1);
-            console.log(response.data.comments)
+            //console.log(response.data.comments)
             if(response.data.comments.length==0) updateMore(false);
         }
     };
@@ -144,7 +144,7 @@ if(response.data.comments.length==0) updateMore(false);
                             <img className="__comment_profPfp" src={e.commentedBy.pfpLink} />
                         </div>
                         <div className="__comment_restBox">
-                            <div className="__comment_name">{e.commentedBy.name} - {index}
+                            <div className="__comment_name">{e.commentedBy.name}
                                 <p className="__comment_timeAgo">{getPastTime(e.commentedAt)}</p>
                             </div>
                             <div className="__comment_div">{e.commentText}</div>

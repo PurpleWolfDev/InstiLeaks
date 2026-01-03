@@ -23,11 +23,11 @@ export const General = () => {
     const [start, updateStart] = useState(0); 
     const [end, updateEnd] = useState(10); 
     const [report, updateReport] = useState(false);
-    console.log("report", reportVal)
+    //console.log("report", reportVal)
     const dispatch = useDispatch();
-    useEffect(()=> {updateReport(reportVal);console.log(reportVal)}, [reportVal])
+    useEffect(()=> {updateReport(reportVal);}, [reportVal])
      useEffect(() => {
-        console.log(cards);
+        //console.log(cards);
     }, [cards]);
     useEffect(() => {
         dispatch(toggleLoading({isLoading:true}));
@@ -38,7 +38,7 @@ export const General = () => {
             if(res.status==200) {
                 let data = res.posts;
                 // console.
-                dispatch(setBaseState({baseFeed:data}));
+                dispatch(setBaseState({baseFeed:[...data].reverse()}));
             }
             else {
                 toast("Something exploded behind the scenes. Please restart the app",{

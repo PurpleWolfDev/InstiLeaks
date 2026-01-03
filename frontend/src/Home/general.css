@@ -88,6 +88,7 @@
     width: calc(100% - 50px);
     margin-left: 25px;
     margin-top: 20px;
+    /* padding:5px; */
     background:#202020;
     max-height: 300px;
     display: flex;
@@ -96,16 +97,19 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+
 .__card_img{
     /* max-height: 300px; */
     /* width: auto; */
     object-fit: contain; 
-    max-width:100%;
+    height: 100%;
+    width: 100%;
+    /* max-width:100%; */
   will-change: transform;
   transition: transform 0.2s ease-out;
-    max-height: 300px;
+    /* max-height: 300px; */
     position: relative;
-    min-height: 250px;
+    /* min-height: 250px; */
     display: block;
     object-position: center;
     margin:auto;

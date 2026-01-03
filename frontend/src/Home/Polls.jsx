@@ -25,7 +25,7 @@ export const Polls = () => {
                 let res = response.data;
                 if(res.status==200) {
                     let data = res.posts;
-                    dispatch(setBaseState3({baseFeed:data}));
+                    dispatch(setBaseState3({baseFeed:[...data].reverse()}));
                 }
                 else {
                     toast("Something exploded behind the scenes. Please restart the app",{

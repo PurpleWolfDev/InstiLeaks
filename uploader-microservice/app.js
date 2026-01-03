@@ -40,6 +40,28 @@ app.post("/user/attachmentUpload", async(req, res) => {
         res.json({status:500, msg:err});
     }
 });
+app.post("/user/attachmentUpload_v2", async(req, res) => {
+    try {
+        let status = await verifyUser();
+        if(status) {
+            let {attachments,  ...d} = req.body;
+            console.log(d);
+            let links = await fileUpload([attachments]);
+            let data = {pfpLink : links[0], ...d};
+            let result = await axios.post(process.env.main_api+"/home/user/updatePfp", data);
+            // console.log(result).data;
+            if(result.data.status==200) {
+                res.json({status:200, data:result.data});
+            }
+        }
+        else {
+            res.json({status:400, msg:'failed to auth at file upload'});
+        }
+    } catch(err) {
+        console.log(err)
+        res.json({status:500, msg:err});
+    }
+});
 
 async function fileUpload(base64Arr) {
     try {
@@ -66,6 +88,7 @@ async function fileUpload(base64Arr) {
         }
         return links;
     } catch(err) {
+        console.log(err)
         throw "upload failed";
     }
 }
