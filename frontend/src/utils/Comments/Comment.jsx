@@ -5,7 +5,8 @@ import { toggleComment } from '../../store/slices/commentSlice';
 import {RxCross2} from 'react-icons/rx';
 import { IoSend } from "react-icons/io5";
 import InfiniteScroll from "react-infinite-scroll-component";
-
+import malePfp from './../../assets/icons/malepfp.png';
+import femalePfp from './../../assets/icons/femalepfp.png';
 import { toggleLoading } from '../../store/slices/loaderSlice';
 import axios from 'axios';
 import { BeatLoader } from 'react-spinners';
@@ -29,7 +30,7 @@ export const Comment = () => {
         try {
             if(commentText.length>0) {
             dispatch(toggleLoading({isLoading:true}));
-            axios.post(`http://127.0.0.1:8080/home/user/postComment`, {uId:JSON.parse(localStorage.getItem("data")).uId, jwtToken:localStorage.getItem("token"), postId, commentText:commentText, _id:JSON.parse(localStorage.getItem("data"))._id })
+            axios.post(`https://341cde29429e.ngrok-free.app/home/user/postComment`, {uId:JSON.parse(localStorage.getItem("data")).uId, jwtToken:localStorage.getItem("token"), postId, commentText:commentText, _id:JSON.parse(localStorage.getItem("data"))._id })
             .then(response => {
                 dispatch(toggleLoading({isLoading:false}));
                 updateComments([ {
@@ -55,7 +56,7 @@ export const Comment = () => {
     useEffect(() => {
         try {
             dispatch(toggleLoading({isLoading:true}));
-            axios.get(`http://127.0.0.1:8080/home/user/getComments?page=${page}&postId=${postId}&jwtToken=${localStorage.getItem("token")}`)
+            axios.get(`https://341cde29429e.ngrok-free.app/home/user/getComments?page=${page}&postId=${postId}&jwtToken=${localStorage.getItem("token")}`)
             .then(response => {
                 dispatch(toggleLoading({isLoading:false}));
 if(response.data.comments.length==0) updateMore(false);
@@ -110,7 +111,7 @@ if(response.data.comments.length==0) updateMore(false);
 
     const loadComments = async() => {
 
-        let response = await axios.get(`http://127.0.0.1:8080/home/user/getComments?page=${page+1}&postId=${postId}&jwtToken=${localStorage.getItem("token")}`)
+        let response = await axios.get(`https://341cde29429e.ngrok-free.app/home/user/getComments?page=${page+1}&postId=${postId}&jwtToken=${localStorage.getItem("token")}`)
         if(response.data.status==200) {
             updateComments([...comments, ...response.data.comments]);
             updatePage(page+1);
@@ -141,7 +142,7 @@ if(response.data.comments.length==0) updateMore(false);
                 {comments.map((e, index) => {
                     return <div className='__comment_eachComment'>
                         <div className="__comment_eachCommentHeadImg">
-                            <img className="__comment_profPfp" src={e.commentedBy.pfpLink} />
+                            <img className="__comment_profPfp" src={e.commentedBy.pfpLink==""?(e.commentedBy.gender=="male"?malePfp:femalePfp):e.commentedBy.pfpLink} />
                         </div>
                         <div className="__comment_restBox">
                             <div className="__comment_name">{e.commentedBy.name}

@@ -13,7 +13,7 @@ export function Splash() {
             //console.log(data);
             if(data.rollNo.length>5) {
                 timeStamp.current = new Date().getTime();
-                axios.post(`http://127.0.0.1:8080/auth/user/getUserDetails`, {rollNo : data.rollNo, uId:data.uId, jwtToken:localStorage.getItem("token")})
+                axios.post(`https://341cde29429e.ngrok-free.app/auth/user/getUserDetails`, {rollNo : data.rollNo, uId:data.uId, jwtToken:localStorage.getItem("token")})
                 .then((response) => {
                     //console.log("response", response);
                     if(response.data.status==200) {
@@ -32,7 +32,7 @@ export function Splash() {
             //console.log(err);
             localStorage.clear();
             setTimeout(() => {
-                navigate("/login");
+                navigate("/register");
             }, 2000);
         }
     }, []);

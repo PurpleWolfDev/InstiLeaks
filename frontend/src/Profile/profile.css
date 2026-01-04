@@ -7,7 +7,7 @@
     height: calc(100% - 120px);
     width: 100%;
     margin-top: 60px;
-    border: 1px solid white;
+    /* border: 1px solid white; */
 }
 .__profile_infoContainer{
     height: 220px;
@@ -16,8 +16,8 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    border: 1px solid red;
-    margin-top: 30px;
+    /* border: 1px solid red; */
+    margin-top: 110px;
 }
 .__profile_pfpImgContainer{
     height: 150px;

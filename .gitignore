@@ -6,3 +6,5 @@ uploader-microservice/node_modules
 uploader-microservice/*.zip
 uploader-microservice/.env
 backend/.env
+# Local Netlify folder
+.netlify

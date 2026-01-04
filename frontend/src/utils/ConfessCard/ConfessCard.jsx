@@ -9,6 +9,9 @@ import { invokeShare } from "../invokeShare/invokeShare";
 import axios from "axios";
 import { updateReportId } from "../../store/slices/reportSlice";
 import {FaRegComment} from 'react-icons/fa';
+import fImg from "./../../assets/icons/femalepfp.png";
+import mImg from "./../../assets/icons/malepfp.png";
+
 import { toggleComment } from "../../store/slices/commentSlice";
 import { toggleImage } from "../../store/slices/imageSlice";
 import {BiUpvote, BiSolidUpvote, BiDownvote, BiSolidDownvote} from 'react-icons/bi';
@@ -41,7 +44,7 @@ export const ConfessCard = ({card}) => {
             updateDisliked(false);
         }
         //let flag = 0; // 0 - no banner, 1 - ths much likes in past 10 minutes, 2 - trending, 3 - aag laga raha
-        axios.get(`http://127.0.0.1:8080/home/user/getLastLikes?jwtToken=${localStorage.getItem("token")}&postId=${card.postId}`)
+        axios.get(`https://341cde29429e.ngrok-free.app/home/user/getLastLikes?jwtToken=${localStorage.getItem("token")}&postId=${card.postId}`)
         .then(response => {
             //console.log(response.data)
             if(response.status==200){
@@ -126,7 +129,7 @@ export const ConfessCard = ({card}) => {
                 updateClass2("__card_reactEffect2");
                 updateDisliked(!isDisliked);
             }
-        axios.post(`http://127.0.0.1:8080/home/user/addReaction`, {postId:card.postId, uId:JSON.parse(localStorage.getItem("data")).uId, jwtToken:localStorage.getItem("token"), task:type})
+        axios.post(`https://341cde29429e.ngrok-free.app/home/user/addReaction`, {postId:card.postId, uId:JSON.parse(localStorage.getItem("data")).uId, jwtToken:localStorage.getItem("token"), task:type})
         .then(response => {
             if(response.status==200) {
                 setTimeout(() => {updateClass2("");updateClass1("")}, 300);
@@ -142,7 +145,7 @@ export const ConfessCard = ({card}) => {
         <>
             <div key={card.postId} className="__general_eachCard">
                 <div className="__card_header">
-                    <img onClick={() => {dispatch(toggleImage({imagePreview:card.postedBy.pfpLink!=""?card.postedBy.pfpLink:profImg}))}} className="__card_profPfp" src={card.postedBy.pfpLink!=""?card.postedBy.pfpLink:profImg} />
+                    <img onClick={() => {dispatch(toggleImage({imagePreview:card.postedBy.pfpLink!=""?card.postedBy.pfpLink:(card.postedBy.gender=="male"?mImg:fImg)}))}} className="__card_profPfp" src={card.postedBy.pfpLink!=""?card.postedBy.pfpLink:(card.postedBy.gender=="male"?mImg:fImg)} />
                     <div className="__card_nameContainer">{card.postedBy.name}</div>
                     <div className="__card_dots" onClick={() => {dispatch(updateReportId({reportId: card.postId}));dispatch(toggleReport({isReport:true}))}}><MdReportProblem  /></div>
                 </div>

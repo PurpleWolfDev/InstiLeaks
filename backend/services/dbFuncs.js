@@ -5,6 +5,7 @@ mongoose.connect(dbUrl)
 .catch(err => {console.log("failed to connect to db", err);});
 const {userSchema} = require("./../schemas/userSchema.js");
 const {postSchema} = require("./../schemas/postSchema.js");
+const {sendPush} = require("./../services/pushNotifs.js");
 const {reportSchema} = require("./../schemas/reportSchema.js")
 const {notifSchema} = require("./../schemas/notifSchema.js");
 
@@ -43,12 +44,12 @@ const updateUser = async(param, updatedObj) => {
 const getPosts = async(start, end, params, selection=null) => {
     try {
         let res = await Posts.find(params).populate({path: 'postedBy',
-    select: 'name pfpLink -_id'})
+    select: 'name pfpLink gender -_id'})
     .populate({
                 path: 'comments',
                 populate: {
                     path: 'commentedBy',
-                    select: 'name pfpLink -_id'
+                    select: 'name pfpLink gender -_id'
                 }
             })
                     .select(selection)
@@ -101,15 +102,23 @@ const addPost = async(data) => {
 const addReport = async(data) => {
     try {
         let res = await new Reports(data).save();
+
         return res;         
     } catch(err) {
         throw err;
     }
 }
 
-const addNotifs = async(data) => {
+const addNotifs = async(data, uId, endpoint) => {
     try {
         let res = await new Notifications(data).save();
+        let user = (await Users.find({uId}))[0].notificationSettings;
+        let payload = {
+            title: data.notifTitle,
+            body: data.notifMsg,
+            url: endpoint
+        };
+        await sendPush(user, payload);
         return res;
     } catch(err) {
         throw err;
@@ -137,6 +146,21 @@ const deletePost = async(params) => {
         throw err;
     }
 }
+
+const updateNotifs = async(userId) => {
+    try {
+        let res = await Notifications.updateMany({ notifFor: userId },{ $addToSet: { notifSeenBy: userId } });
+        return res;
+    } catch(err) {
+        throw err;
+    }
+};
+
+// (async() => {
+//     console.log(await Users.deleteMany());
+//     console.log(await Posts.deleteMany());
+//     console.log(await Notifications.deleteMany());
+// })();
 // const posts = [
 //   // ---------- GENERAL (7) ----------
 //   {
@@ -483,4 +507,4 @@ const deletePost = async(params) => {
 
 // (async() => {let res = await Posts.insertMany(posts);console.log(res)})();
 // (async() => {console.log(await Posts.deleteMany())})()
-module.exports = {findUser, saveUser, updateUser, getPosts, findPost, updatePost, addPost, addReport, addNotifs, findNotifs, deletePost};
+module.exports = {findUser, saveUser, updateUser, getPosts, findPost, updatePost, addPost, addReport, updateNotifs, addNotifs, findNotifs, deletePost};

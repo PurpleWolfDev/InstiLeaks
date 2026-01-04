@@ -39,7 +39,7 @@ export const FP = () => {
                 rollNo
             };
             updateLoading(true);
-            let result = (await axios.post(`http://127.0.0.1:8080/auth/user/userforgotPass1`, data)).data;
+            let result = (await axios.post(`https://341cde29429e.ngrok-free.app/auth/user/userforgotPass1`, data)).data;
             updateLoading(false);
             if(result.status == 200) {
                 toast("OTP sent to IITB mail.",{
@@ -90,7 +90,7 @@ export const FP = () => {
                     rollNo:rollNo, password:pass, otp:otp, token:tokenRef.current
                 };
                 updateLoading(true);
-                let result = (await axios.post(`http://127.0.0.1:8080/auth/user/userforgotPass2`, data)).data;
+                let result = (await axios.post(`https://341cde29429e.ngrok-free.app/auth/user/userforgotPass2`, data)).data;
                 updateLoading(false);
                 if(result.status == 200) {
                     toast("Password has been changed",{

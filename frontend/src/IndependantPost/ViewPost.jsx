@@ -38,7 +38,7 @@ export const ViewPost = () => {
                 if(postType=="gh") {postTypeRef.current = "general";}
                 if(postType=="m") {postTypeRef.current = "meme";}
 
-                axios.post(`http://127.0.0.1:8080/home/user/getPost`, {jwtToken:localStorage.getItem("token"), start:1, end:10, type:postTypeRef.current, uId:JSON.parse(localStorage.getItem("data")).uId, postId:postId})
+                axios.post(`https://341cde29429e.ngrok-free.app/home/user/getPost`, {jwtToken:localStorage.getItem("token"), start:1, end:10, type:postTypeRef.current, uId:JSON.parse(localStorage.getItem("data")).uId, postId:postId})
                 .then(response => {
                     if(response.status==200) {
                         updateCard(response.data.posts[0]);

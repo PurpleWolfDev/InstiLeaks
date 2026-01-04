@@ -113,7 +113,7 @@ export const CreatePost = () => {
             _id:JSON.parse(localStorage.getItem("data"))._id
         };
         dispatch(toggleLoading({isLoading:true}));
-        axios.post(`http://127.0.0.1:8081/user/attachmentUpload`, data)
+        axios.post(`https://5beb0e011d5e.ngrok-free.app/user/attachmentUpload`, data)
         .then(response => {
             updateTitle("");
             //console.log(response.data);
@@ -157,7 +157,7 @@ export const CreatePost = () => {
                    </div>
                     {(postType=="general" || postType=="meme")?<div className="__create_attachments">
                     <div className="__create_selectLabel2">Upload images / videos here {"(max 3)"}</div>
-                            <input accept="image/*, video/mp4" disabled={disableAttachments} onChange={(e) => {handleFileUpload(e)}} type="file" style={{height:'0'}} id="custom-file-upload" name="userFile" />
+                            <input accept="image/*" disabled={disableAttachments} onChange={(e) => {handleFileUpload(e)}} type="file" style={{height:'0'}} id="custom-file-upload" name="userFile" />
                             <br />
                             <label onClick={() => {addRippleClass(true);setTimeout(() => addRippleClass(false), 200);}} htmlFor="custom-file-upload" className={"__create_fileUploadBtn "+(ripple?"__create_ripple":"")}>
                                 Select File

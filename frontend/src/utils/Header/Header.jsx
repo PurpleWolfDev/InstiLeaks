@@ -8,6 +8,7 @@ import { IoIosSearch } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 import { setBaseState, searchFilter } from '../../store/slices/searchSlice';
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+import toast, {Toaster} from 'react-hot-toast';
 import { toggleLoading } from '../../store/slices/loaderSlice';
 import InfiniteScroll from "react-infinite-scroll-component";
 import { BeatLoader } from 'react-spinners';
@@ -17,6 +18,7 @@ export const Header = ({tab}) => {
     const [isLoading, updateLoading] = useState(false);
     const [notifs, updateNotifs] = useState([]);
         const [hasMore, updateMore] = useState(true);
+    const [unRead, updateRead] = useState(0);
         const [page, updatePage] = useState(1);
     // const notifs = useSelector(state => state.notifs.notifsArr);
     const searchRef = useRef("");
@@ -35,10 +37,12 @@ export const Header = ({tab}) => {
     useEffect(() => {
         try {
             dispatch(toggleLoading({isLoading:true}));
-            axios.get(`http://127.0.0.1:8080/home/user/getNotifs?page=${page}&_id=${JSON.parse(localStorage.getItem("data"))._id}&jwtToken=${localStorage.getItem("token")}`)
+            axios.get(`https://341cde29429e.ngrok-free.app/home/user/getNotifs?page=${page}&_id=${JSON.parse(localStorage.getItem("data"))._id}&jwtToken=${localStorage.getItem("token")}`)
             .then(response => {
                 dispatch(toggleLoading({isLoading:false}));
 if(response.data.notifs.length==0) updateMore(false);
+            updateRead(response.data.unread);
+
                 ((notifs.length==0)||(notifs[0]._id!=response.data.notifs[0]._id))&&updateNotifs([...notifs, ...response.data.notifs]);
             })
             .catch(err => {throw err;});
@@ -87,19 +91,45 @@ if(response.data.notifs.length==0) updateMore(false);
   }
     };
 
-    
+    const readNotifs = () => {
+        try {
+            dispatch(toggleLoading({isLoading:true}));
+            axios.post(`https://341cde29429e.ngrok-free.app/home/user/readNotifs`, {_id:JSON.parse(localStorage.getItem("data"))._id, jwtToken:localStorage.getItem("token")})
+            .then(response => {
+                dispatch(toggleLoading({isLoading:false}));
+                if(response.data.status==200) {
+                    updateRead(0);
+                }
+                else throw 'err';
+            }).catch(err => {
+                toast("Something exploded behind the scenes. Please restart the app",{
+                duration: 4000,
+                position: 'top-center',
+                icon: '❌'});
+                dispatch(toggleLoading({isLoading:false}));
+                throw err;
+            });
+        } catch(err) {
+            dispatch(toggleLoading({isLoading:false}));
+            toast("Something exploded behind the scenes. Please restart the app",{
+            duration: 4000,
+            position: 'top-center',
+            icon: '❌'});
+        }
+    }
 
     const loadNotifs = async() => {
 
-        let response = await axios.get(`http://127.0.0.1:8080/home/user/getNotifs?page=${page+1}&_id=${JSON.parse(localStorage.getItem("data"))._id}&jwtToken=${localStorage.getItem("token")}`)
+        let response = await axios.get(`https://341cde29429e.ngrok-free.app/home/user/getNotifs?page=${page+1}&_id=${JSON.parse(localStorage.getItem("data"))._id}&jwtToken=${localStorage.getItem("token")}`)
         if(response.data.status==200) {
             updateNotifs([...notifs, ...response.data.notifs]);
+            updateRead(response.data.unread);
             updatePage(page+1);
             //console.log(response.data.notifs)
             if(response.data.notifs.length==0) updateMore(false);
         }
     };
-    //console.log(notifs);
+    console.log(unRead);
 
     return(
     <>
@@ -111,6 +141,7 @@ if(response.data.notifs.length==0) updateMore(false);
                     {(((!searchToggle)&&(!notifToggle)))?<IoIosSearch onClick={() => {updateSearchToggle(true);activateSearch();}} color="white" size={25} />:null}
                 </div>
                 <div className="__header_option1" onClick={() => {loadNotifs();}}>
+                    {unRead>0?<div className="__header_unread">{unRead}</div>:null}
                     {(((!searchToggle)&&(!notifToggle)))?<IoMdNotifications onClick={() => {updateNotifToggle(true);}} color="white" size={25} />:null}
                 </div>
             </div>
@@ -132,6 +163,7 @@ if(response.data.notifs.length==0) updateMore(false);
                         <RxCross1 size={25} />
                     </div>
                     Notifications
+                    {unRead>0?<div className="__notif_mark" onClick={() => {readNotifs()}}>Mark as read</div>:null}
                 </div>
                 <InfiniteScroll
                     dataLength={notifs.length}
@@ -163,6 +195,14 @@ if(response.data.notifs.length==0) updateMore(false);
                                     </div>
                                 })}
                 </InfiniteScroll>
+                <Toaster
+                toastOptions={{
+                    style: {
+                        background: '#181818',
+                        color: '#f5f5f5',
+                    },
+                }}  
+            />
             </div>
         :null}
     </>);

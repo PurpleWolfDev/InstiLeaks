@@ -10,8 +10,21 @@ import { IoFastFoodSharp, IoFastFoodOutline  } from "react-icons/io5";
 import outlineUser from './../../assets/icons/outlineUser.png';
 import { useDispatch } from 'react-redux';
 import { filterTabs } from '../../store/slices/searchSlice';
+import axios from 'axios';
 
 
+async function subscribeUser() {
+  const registration = await navigator.serviceWorker.ready;
+
+  const subscription = await registration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: "BAlm3_vmebK0Z3LhQTpO0yK3pk_XVYwCynqRJlsmF8mSah79GD_WblV3cQsf0m4KXDysMKGTOch3-mFpFVzb2Zg"
+  });
+
+  // send to backend
+  let result = await axios.post("https://341cde29429e.ngrok-free.app/home/user/registerPush", {payload:subscription, jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem("data")).uId});
+  console.log(result);
+}
 
 
 export const Pagination = ({currentPage}) => {

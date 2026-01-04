@@ -38,10 +38,8 @@ const userSchema =  mongoose.Schema({
 
   // Notifications & Preferences
   notificationSettings: {
-    likes: Boolean,
-    comments: Boolean,
-    mentions: Boolean,
-    roastChallenges: Boolean
+    type:Object,
+    default:{}
   },
 
   // Moderation

@@ -221,7 +221,7 @@ authRouter.post("/loginUser", validateFields, scanIP, async(req, res) => {
                     idName:result.idName?result.idName:"none",
                     gender:result.gender,
                     uId : result.uId,
-                notificationSettings:result.notificationSettings,
+                //notificationSettings:result.//notificationSettings,
                 bio:result.bio,
                     pfpLink:result.pfpLink?result.pfpLink:"none",
                     _id:result._id
@@ -330,7 +330,7 @@ authRouter.post("/verifyUserOtp", validateFields, scanIP, async(req, res) => {
                     pfpLink: user.pfpLink, 
                     idName: user.idName, 
                     _id:user._id,
-                notificationSettings:user.notificationSettings,
+                //notificationSettings:user.//notificationSettings,
                 bio:user.bio,
                     uId : user.uId 
                 }, 
@@ -505,7 +505,7 @@ authRouter.post("/getuserDetails", validateFields, scanIP, verifyJWT, async(req,
                 gender:user.gender,
                 pfpLink:user.pfpLink,
                 bio:user.bio,
-                notificationSettings:user.notificationSettings,
+                //notificationSettings:user.//notificationSettings,
                 rollNo:rollNo,
                 _id:user._id
             };
@@ -536,7 +536,7 @@ authRouter.get("/verifyUserLink", validateFields, scanIP, checkExistingUsers,asy
                     gender:user.gender,
                     pfpLink:user.pfpLink,
                     bio:user.bio,
-                    notificationSettings:user.notificationSettings,
+                    //notificationSettings:user.//notificationSettings,
                 };
                 let jwtToken = jsonwebtoken.sign({name : user.name, rollNo : rollNo}, jwtKey);
                 await redis.del(`otp:${rollNo}`);

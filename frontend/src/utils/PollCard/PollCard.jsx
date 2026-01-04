@@ -7,6 +7,9 @@ import axios from "axios";
 import {FaRegComment} from 'react-icons/fa';
 import { invokeShare } from "../invokeShare/invokeShare";
 import { updateReportId } from "../../store/slices/reportSlice";
+import fImg from "./../../assets/icons/femalepfp.png";
+import mImg from "./../../assets/icons/malepfp.png";
+
 import { toggleImage } from "../../store/slices/imageSlice";
 import {toggleLoading} from './../../store/slices/loaderSlice';
 import {IoMdShareAlt} from 'react-icons/io'
@@ -77,7 +80,7 @@ export const PollCard = ({car}) => {
     const reactOpt = (index) => {
       try {
       // dispatch(toggleLoading({isLoading:true}));
-      axios.post(`http://127.0.0.1:8080/home/user/addReactionPoll`, {uId: JSON.parse(localStorage.getItem("data")).uId, jwtToken : localStorage.getItem("token"), optionNo : index, postId:card.postId})
+      axios.post(`https://341cde29429e.ngrok-free.app/home/user/addReactionPoll`, {uId: JSON.parse(localStorage.getItem("data")).uId, jwtToken : localStorage.getItem("token"), optionNo : index, postId:card.postId})
       .then(response => {
         // dispatch(toggleLoading({isLoading:false}));
         if(response.data.status==200) {
@@ -126,7 +129,7 @@ export const PollCard = ({car}) => {
         <>
             {(card!=null&&card.poll)?<div key={card.postId} className="__general_eachCard" style={{paddingBottom:'10px'}}>
                 <div className="__card_header">
-                    <img onClick={() => {dispatch(toggleImage({imagePreview:card.postedBy.pfpLink!=""?card.postedBy.pfpLink:profImg}))}} className="__card_profPfp" src={card.postedBy.pfpLink!=""?card.postedBy.pfpLink:profImg} />
+                    <img onClick={() => {dispatch(toggleImage({imagePreview:card.postedBy.pfpLink!=""?card.postedBy.pfpLink:(card.postedBy.gender=="male"?mImg:fImg)}))}} className="__card_profPfp" src={card.postedBy.pfpLink!=""?card.postedBy.pfpLink:(card.postedBy.gender=="male"?mImg:fImg)} />
                     <div className="__card_nameContainer">{card.postedBy.name}</div>
                     <div className="__card_dots" onClick={() => {dispatch(updateReportId({reportId: card.postId}));dispatch(toggleReport({isReport:true}))}}><MdReportProblem  /></div>
                 </div>

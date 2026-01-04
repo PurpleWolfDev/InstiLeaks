@@ -11,6 +11,8 @@ import {FaRegComment} from 'react-icons/fa';
 import profImg from './../assets/icons/malepfp.png';
 import { Comment } from "../utils/Comments/Comment";
 import axios from 'axios';
+import { BeatLoader } from "react-spinners";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { IoMdShareAlt } from "react-icons/io";
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
@@ -29,7 +31,8 @@ export const Confession = () => {
     const reportVal = useSelector(state => state.report.isReport);
     const visibleState = useSelector(state => state.comment.display);
     const [start, updateStart] = useState(0); 
-    const [end, updateEnd] = useState(10); 
+    const [end, updateEnd] = useState(10);     const [hasMore, updateMore] = useState(true);
+    
     const [report, updateReport] = useState(false);
     const [test, updateTest] = useState(0);
     //console.log("report", reportVal)
@@ -42,13 +45,15 @@ export const Confession = () => {
     useEffect(() => {
         verifyUser();
         dispatch(toggleLoading({isLoading:true}));
-        axios.post(`http://127.0.0.1:8080/home/user/getPosts`, {jwtToken:localStorage.getItem("token"), start, end, type:'confession', uId:JSON.parse(localStorage.getItem("data")).uId})
+        axios.post(`https://341cde29429e.ngrok-free.app/home/user/getPosts`, {jwtToken:localStorage.getItem("token"), start, end, type:'confession', uId:JSON.parse(localStorage.getItem("data")).uId})
         .then(response => {
             dispatch(toggleLoading({isLoading:false}));
             let res = response.data;
             if(res.status==200) {
+updateStart(10);
+                updateEnd(20);
                 let data = res.posts;
-                // console.
+                if(data.length==0) updateMore(false);                // console.
                 dispatch(setBaseState({baseFeed:[...data].reverse()}));
                 dispatch(filterTabs({query:'confession'}));
                 // updateCards(data)    `                                           dssssssssssssss
@@ -69,13 +74,62 @@ export const Confession = () => {
         });
     }, []);
 
+    const loadPost = () => {
+         dispatch(toggleLoading({isLoading:true}));
+        axios.post(`https://341cde29429e.ngrok-free.app/home/user/getPosts`, {jwtToken:localStorage.getItem("token"), start, end, type:'general', uId:JSON.parse(localStorage.getItem("data")).uId})
+        .then(response => {
+            dispatch(toggleLoading({isLoading:false}));
+            let res = response.data;
+            if(res.status==200) {
+                updateStart(start+10);
+                updateEnd(end+10);
+                let data = res.posts;
+                let shit = [...data].reverse();
+                if(data.length==0) updateMore(false);
+                // console.
+dispatch(setBaseState({baseFeed:[...cards, ...data].reverse()}));
+                dispatch(filterTabs({query:'confession'}));
+                // updateCards(data)    `                                           dssssssssssssss
+                updateTest(test+1);            }
+            else {
+                console.log("sfousuf");
+                toast("Something exploded behind the scenes. Please restart the app",{
+                duration: 4000,
+                position: 'top-center',
+                icon: '❌'});
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            toast("Something exploded behind the scenes. Please restart the app",{
+                duration: 4000,
+                position: 'top-center',
+                icon: '❌'});
+        });
+    };
+
 
     return(
         <>
             <div className="__confess_container">
-                {cards.map((card) => {
-                    return <ConfessCard card={card} />;
-                })}
+                <InfiniteScroll
+                    dataLength={cards.length}
+                    next={loadPost}
+                    hasMore={hasMore}
+                    style={{ overflow: "visible" }}
+                    loader={
+                    <div style={{width:'100%',display:'flex',alignItems:'center', justifyContent:'center', color:'#6a2bed', fontSize:'20px'}}><BeatLoader color='#6a2bed' /></div>
+                    }
+                    scrollableTarget="postScroll"
+                    endMessage={
+                        cards.length==0?<div style={{width:'100%',display:'flex',alignItems:'center', justifyContent:'center', color:'#fff', fontSize:'20px', height:'calc(100vh - 130px)'}}>No Confessions</div>:
+                        <div style={{width:'100%',display:'flex',alignItems:'center', justifyContent:'center', color:'#fff', fontSize:'20px', marginTop:'20px', marginBottom:'20px'}}>Yup That's End</div>
+                    }
+                    >
+                    {cards.map((card) => {
+                        return <ConfessCard card={card} />;
+                    })}
+                </InfiniteScroll>
             </div>
             <Toaster
                 toastOptions={{

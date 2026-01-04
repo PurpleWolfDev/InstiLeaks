@@ -8,6 +8,21 @@ const PORT = process.env.PORT || 8081;
 const path = require("path");
 app.use(express.json({ limit: "200mb" }));
 app.use(cors());
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
+
 cloudinary.config({ 
   cloud_name: process.env.cloudinary_cloud_name, 
   api_key: process.env.cloudinary_api_key, 
@@ -24,12 +39,16 @@ app.post("/user/attachmentUpload", async(req, res) => {
         if(status) {
             let {attachments,  ...d} = req.body;
             console.log(d);
-            let links = await fileUpload(attachments);
-            let data = {links, ...d};
-            let result = await axios.post(process.env.main_api+"/home/user/addPost", data);
-            // console.log(result).data;
-            if(result.data.status==200) {
-                res.json({status:200, msg:'files uploaded'});
+            if(attachments.length<=3) {
+                let links = await fileUpload(attachments);
+                let data = {links, ...d};
+                let result = await axios.post(process.env.main_api+"/home/user/addPost", data);
+                // console.log(result).data;
+                if(result.data.status==200) {
+                    res.json({status:200, msg:'files uploaded'});
+                }
+            } else {
+                res.json({status:400, msg:'failed to auth at file upload'});
             }
         }
         else {

@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.netlify.instileaks_beta.twa",
+      "sha256_cert_fingerprints": [
+        "08:C1:87:8D:C6:AC:39:01:B9:D9:66:33:9D:D4:7C:C4:F2:E8:03:19:CB:91:C3:44:63:A5:9F:06:2D:8B:9B:0F"
+      ]
+    }
+  }
+]

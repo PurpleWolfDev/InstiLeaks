@@ -7,19 +7,23 @@ export const verifyUser = () => {
         name : JSON.parse(localStorage.getItem("data")).name,
         jwtToken : localStorage.getItem("token")
     }
-    axios.post(`http://127.0.0.1:8080/auth/user/verifyUser`, data)
+    axios.post(`https://341cde29429e.ngrok-free.app/auth/user/verifyUser`, data)
     .then(response => {
         //console.log(response.data);
-        if(!response.data.status==200) {
-            throw "err";
+        if(!(response.data.status==200)) {
+            localStorage.clear();
+            window.location.href = "/login";
+            throw "err";;
         }
     })
     .catch(err => {
+        localStorage.clear();
+        window.location.href = "/login";
         throw err;
     })
     } catch(err) {
         //console.log(err);
-        // localStorage.clear();
+        localStorage.clear();
         window.location.href = "/login";
     }
     // return true;

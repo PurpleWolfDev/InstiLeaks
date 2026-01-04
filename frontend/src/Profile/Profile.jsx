@@ -12,6 +12,8 @@ import { ImageView } from "../utils/ImageView/ImageView";
 import { HiDotsVertical } from "react-icons/hi";
 import { MdEdit } from "react-icons/md";
 import toast, { Toaster } from 'react-hot-toast';
+import fImg from "./../assets/icons/femalepfp.png";
+import mImg from "./../assets/icons/malepfp.png";
 import { Loader } from "../utils/Loader/Loader";
 import { RxCross2 } from "react-icons/rx";
 import { data } from "react-router-dom";
@@ -36,7 +38,7 @@ export const Profile = () => {
     const fetchPosts = (pType=false) => {
         try {
             dispatch(toggleLoading({isLoading:true}));
-            axios.post("http://127.0.0.1:8080/home/user/getUserPost", {jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem("data")).uId, postType:pType?pType:postType, _id:JSON.parse(localStorage.getItem("data"))._id})
+            axios.post("https://341cde29429e.ngrok-free.app/home/user/getUserPost", {jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem("data")).uId, postType:pType?pType:postType, _id:JSON.parse(localStorage.getItem("data"))._id})
             .then(response => {
                 dispatch(toggleLoading({isLoading:false}));
                 if(response.data.status==200) {
@@ -97,7 +99,7 @@ export const Profile = () => {
             let t = currentPost;
             updateCurrent(false);
             dispatch(toggleLoading({isLoading:true}));
-            axios.post(`http://127.0.0.1:8080/home/user/deletePost`, {postId:t.postId,  jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem("data")).uId,_id:JSON.parse(localStorage.getItem("data"))._id})
+            axios.post(`https://341cde29429e.ngrok-free.app/home/user/deletePost`, {postId:t.postId,  jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem("data")).uId,_id:JSON.parse(localStorage.getItem("data"))._id})
             .then(response => {
                 dispatch(toggleLoading({isLoading:false}));
                 if(response.data.status==200) {
@@ -124,7 +126,7 @@ export const Profile = () => {
     const handleSubmit = (data) => {
         try {
             dispatch(toggleLoading({isLoading:true}));
-            axios.post(`http://127.0.0.1:8081/user/attachmentUpload_v2`, {attachments:data,  jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem("data")).uId})
+            axios.post(`https://5beb0e011d5e.ngrok-free.appuser/attachmentUpload_v2`, {attachments:data,  jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem("data")).uId})
             .then(response => {
                 dispatch(toggleLoading({isLoading:false}));
                 if(response.data.status==200) {
@@ -155,7 +157,7 @@ export const Profile = () => {
                 <div className="__profile_mainContainer">
                     <div className="__profile_infoContainer">
                         <div className="__profile_pfpImgContainer">
-                            <img onClick={() => {dispatch(toggleImage({imagePreview:pfpLink}))}} className="__profile_pfpImg" src={pfpLink} />
+                            <img onClick={() => {dispatch(toggleImage({imagePreview:(pfpLink==""?(JSON.parse(localStorage.getItem("data")).gender=="male"?mImg:fImg):pfpLink)}))}} className="__profile_pfpImg" src={(pfpLink==""?(JSON.parse(localStorage.getItem("data")).gender=="male"?mImg:fImg):pfpLink)} />
                             <input accept="image/*" onChange={(e) => {handleFileUpload(e)}} type="file" style={{height:'0', width:0}} id="custom-file-upload" name="userFile" />
                             <br />
                             <label htmlFor="custom-file-upload" className={"__profile_edit "}>
@@ -176,7 +178,7 @@ export const Profile = () => {
                    <div className="__profile_postContainer">
                         {post.map((e) => {
                             //console.log(e)
-                            return <div className="__profile_eachPost" onClick={() => {window.location.href=`http://localhost:5173/post?h=yes&ref=${e.postId}&t=${e.postType=="general"?"gh":(e.postType=="meme"?"m":(e.postType=="polls"?"pl":"cf"))}`}}>
+                            return <div className="__profile_eachPost" onClick={() => {window.location.href=`/post?h=yes&ref=${e.postId}&t=${e.postType=="general"?"gh":(e.postType=="meme"?"m":(e.postType=="polls"?"pl":"cf"))}`}}>
                                 {((((e.postType=="general") || e.postType=="meme"))&& (e.attachments.length != 0))?<img className="__profile_postImg" src={e.attachments[0].secure_url} />:null}
                                 {((e.postType!="polls")&&!((((e.postType=="general") || e.postType=="meme"))&& (e.attachments.length != 0)))?<div className="__profile_postText">
                                     {e.title.length>20?e.title.substring(0, 21)+"...":e.title}

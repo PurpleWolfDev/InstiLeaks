@@ -9,7 +9,7 @@ const jsonwebtoken = require("jsonwebtoken");
 const axios = require("axios");
 const {sendEmail} = require("../services/sendEmail.js");
 const postRoutes = express.Router();
-const {saveUser, findUser, updateUser, getPosts, findPost, updatePost, addPost, addReport, addNotifs, findNotifs, deletePost} = require("../services/dbFuncs.js");
+const {saveUser, findUser, updateUser, getPosts, findPost, updatePost, addPost, addReport, addNotifs, findNotifs, deletePost, updateNotifs} = require("../services/dbFuncs.js");
 const {validateFields, scanIP, checkExistingUsers, verifyJWT, scanIPv2} = require("../middlewares/middleware.js");
 const jwtKey = process.env.jwt_key;
 const rounds = Number(process.env.hashing_rounds);
@@ -246,7 +246,7 @@ postRoutes.post("/addPost",  validateFields, scanIP, verifyJWT, async(req, res) 
             notifTitle:notifMsg,
             notifMsg:"",
             notifSeenBy:[]
-        });
+        }, uId, "/profile");
         if(!(notifsResp.notifTime>100000)) console.log("Error while saving notifs at /postPost");
     } catch(err) {
         console.log(err);
@@ -308,7 +308,7 @@ postRoutes.get("/getComments", validateFields, scanIP, verifyJWT, async(req, res
 
 postRoutes.post("/report", validateFields, scanIP, verifyJWT, async(req, res) => {
     try {
-        let {_id, reportedTo, reportMsg} = req.body;
+        let {_id, reportedTo, reportMsg, uId} = req.body;
         let reportId = crypto.randomInt(10000000, 99999999);
         let data = {
             reportId,
@@ -327,7 +327,7 @@ postRoutes.post("/report", validateFields, scanIP, verifyJWT, async(req, res) =>
             notifTitle:"Report submitted",
             notifMsg:"We’ve received your report and will take a look.",
             notifSeenBy:[]
-        });
+        }, uId, "/profile");
         if(!(notifsResp.notifTime>100000)) console.log("Error while saving notifs at /reports");
     } catch(err) {
         console.log(err);
@@ -402,6 +402,10 @@ postRoutes.get("/getNotifs", validateFields, scanIP, verifyJWT, async(req, res) 
         console.log(page, start)
         let end = start + pageSize;
         let notifs = (await findNotifs(_id));
+        let unReadCount = 0;
+        for(let i = 0;i<notifs.length;i++) {  
+            if(notifs[i].notifSeenBy!=_id) unReadCount++;
+        }
         notifs = notifs.reverse();
         notifs = notifs.slice(start, end);
         console.log(notifs);
@@ -412,12 +416,13 @@ postRoutes.get("/getNotifs", validateFields, scanIP, verifyJWT, async(req, res) 
         // for(let i = 0;i<comments.length;i++) {
         //     // comments[i].commentedBy = null;
         // }
-        res.json({status:200, notifs})
+        res.json({status:200, notifs, unread:unReadCount})
     } catch(err) {
         console.log(err);
         res.json({status:500, msg:'err at fetching comments'});
     }
 });
+
 
 postRoutes.post("/updatePfp", validateFields, scanIP, verifyJWT, async(req, res) => {
     try {
@@ -507,7 +512,38 @@ postRoutes.post("/deletePost", validateFields, scanIP, verifyJWT, async(req, res
         console.log(err);
         res.json({status: 500});
     }
-})
+});
+
+
+postRoutes.post("/registerPush", validateFields, scanIP, verifyJWT, async(req, res) => {
+    try {
+        const {uId, payload} = req.body;
+        let result = await updateUser({uId:uId}, {notificationSettings:payload});
+        if(result.modifiedCount==1) {
+            res.json({status:200});
+        }
+        else {
+            res.json({status:400})
+        }
+    } catch(err) {
+        res.json({status:500})
+        console.log(err);
+    }
+});
+
+
+postRoutes.post("/readNotifs", validateFields, scanIP, verifyJWT, async(req, res) => {
+    try {
+        let {_id} = req.body;
+        const userId = new mongoose.Types.ObjectId(_id);
+        const result = await updateNotifs(userId);
+        if(result.modifiedCount>=1) res.json({status:200});
+        else res.json({status:400});
+    } catch(err) {
+        console.log(err);
+        res.json({status:500});
+    }
+});
 
 
 module.exports = {postRoutes};
