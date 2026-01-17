@@ -36,7 +36,7 @@ export const Meme = () => {
 
     useEffect(() => {
         dispatch(toggleLoading({isLoading:true}));
-        axios.post(`https://341cde29429e.ngrok-free.app/home/user/getPosts`, {jwtToken:localStorage.getItem("token"), start, end, type:'meme', uId:JSON.parse(localStorage.getItem("data")).uId})
+        axios.post(`https://instileaks.onrender.com/home/user/getPosts`, {jwtToken:localStorage.getItem("token"), start, end, type:'meme', uId:JSON.parse(localStorage.getItem("data")).uId})
         .then(response => {
             dispatch(toggleLoading({isLoading:false}));
             let res = response.data;
@@ -65,7 +65,7 @@ export const Meme = () => {
 
     const loadPost = () => {
          dispatch(toggleLoading({isLoading:true}));
-        axios.post(`https://341cde29429e.ngrok-free.app/home/user/getPosts`, {jwtToken:localStorage.getItem("token"), start, end, type:'general', uId:JSON.parse(localStorage.getItem("data")).uId})
+        axios.post(`https://instileaks.onrender.com/home/user/getPosts`, {jwtToken:localStorage.getItem("token"), start, end, type:'general', uId:JSON.parse(localStorage.getItem("data")).uId})
         .then(response => {
             dispatch(toggleLoading({isLoading:false}));
             let res = response.data;

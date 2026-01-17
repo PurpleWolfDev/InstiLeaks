@@ -44,7 +44,7 @@ export const ConfessCard = ({card}) => {
             updateDisliked(false);
         }
         //let flag = 0; // 0 - no banner, 1 - ths much likes in past 10 minutes, 2 - trending, 3 - aag laga raha
-        axios.get(`https://341cde29429e.ngrok-free.app/home/user/getLastLikes?jwtToken=${localStorage.getItem("token")}&postId=${card.postId}`)
+        axios.get(`https://instileaks.onrender.com/home/user/getLastLikes?jwtToken=${localStorage.getItem("token")}&postId=${card.postId}`)
         .then(response => {
             //console.log(response.data)
             if(response.status==200){
@@ -129,7 +129,7 @@ export const ConfessCard = ({card}) => {
                 updateClass2("__card_reactEffect2");
                 updateDisliked(!isDisliked);
             }
-        axios.post(`https://341cde29429e.ngrok-free.app/home/user/addReaction`, {postId:card.postId, uId:JSON.parse(localStorage.getItem("data")).uId, jwtToken:localStorage.getItem("token"), task:type})
+        axios.post(`https://instileaks.onrender.com/home/user/addReaction`, {postId:card.postId, uId:JSON.parse(localStorage.getItem("data")).uId, jwtToken:localStorage.getItem("token"), task:type})
         .then(response => {
             if(response.status==200) {
                 setTimeout(() => {updateClass2("");updateClass1("")}, 300);

@@ -80,7 +80,7 @@ export const PollCard = ({car}) => {
     const reactOpt = (index) => {
       try {
       // dispatch(toggleLoading({isLoading:true}));
-      axios.post(`https://341cde29429e.ngrok-free.app/home/user/addReactionPoll`, {uId: JSON.parse(localStorage.getItem("data")).uId, jwtToken : localStorage.getItem("token"), optionNo : index, postId:card.postId})
+      axios.post(`https://instileaks.onrender.com/home/user/addReactionPoll`, {uId: JSON.parse(localStorage.getItem("data")).uId, jwtToken : localStorage.getItem("token"), optionNo : index, postId:card.postId})
       .then(response => {
         // dispatch(toggleLoading({isLoading:false}));
         if(response.data.status==200) {

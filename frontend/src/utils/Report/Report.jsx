@@ -17,7 +17,7 @@ export const Report = () => {
     const handleSubmit = () => {
         try {
         updateLoading(true);
-        axios.post(`https://341cde29429e.ngrok-free.app/home/user/report`, {_id:JSON.parse(localStorage.getItem("data"))._id, reportMsg:reportInput, reportedTo : reportId, jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem('data')).uId})
+        axios.post(`https://instileaks.onrender.com/home/user/report`, {_id:JSON.parse(localStorage.getItem("data"))._id, reportMsg:reportInput, reportedTo : reportId, jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem('data')).uId})
         .then(response => {
             updateLoading(false);
             if(response.status==200) {

@@ -113,7 +113,7 @@ export const CreatePost = () => {
             _id:JSON.parse(localStorage.getItem("data"))._id
         };
         dispatch(toggleLoading({isLoading:true}));
-        axios.post(`https://5beb0e011d5e.ngrok-free.app/user/attachmentUpload`, data)
+        axios.post(`https://instileaks-1.onrender.com/user/attachmentUpload`, data)
         .then(response => {
             updateTitle("");
             //console.log(response.data);

@@ -7,7 +7,7 @@ export const verifyUser = () => {
         name : JSON.parse(localStorage.getItem("data")).name,
         jwtToken : localStorage.getItem("token")
     }
-    axios.post(`https://341cde29429e.ngrok-free.app/auth/user/verifyUser`, data)
+    axios.post(`https://instileaks.onrender.com/auth/user/verifyUser`, data)
     .then(response => {
         //console.log(response.data);
         if(!(response.data.status==200)) {

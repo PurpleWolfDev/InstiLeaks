@@ -22,7 +22,7 @@ async function subscribeUser() {
   });
 
   // send to backend
-  let result = await axios.post("https://341cde29429e.ngrok-free.app/home/user/registerPush", {payload:subscription, jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem("data")).uId});
+  let result = await axios.post("https://instileaks.onrender.com/home/user/registerPush", {payload:subscription, jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem("data")).uId});
   console.log(result);
 }
 

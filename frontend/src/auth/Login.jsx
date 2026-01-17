@@ -43,7 +43,7 @@ export const Login = () => {
                 rollNo, password:pass
             };
             updateLoading(true);
-            let result = (await axios.post(`https://341cde29429e.ngrok-free.app/auth/user/loginUser`, data)).data;
+            let result = (await axios.post(`https://instileaks.onrender.com/auth/user/loginUser`, data)).data;
             updateLoading(false);
             if(result.status == 200) {
                 toast("Success! redirecting you.",{

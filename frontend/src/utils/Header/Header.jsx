@@ -37,7 +37,7 @@ export const Header = ({tab}) => {
     useEffect(() => {
         try {
             dispatch(toggleLoading({isLoading:true}));
-            axios.get(`https://341cde29429e.ngrok-free.app/home/user/getNotifs?page=${page}&_id=${JSON.parse(localStorage.getItem("data"))._id}&jwtToken=${localStorage.getItem("token")}`)
+            axios.get(`https://instileaks.onrender.com/home/user/getNotifs?page=${page}&_id=${JSON.parse(localStorage.getItem("data"))._id}&jwtToken=${localStorage.getItem("token")}`)
             .then(response => {
                 dispatch(toggleLoading({isLoading:false}));
 if(response.data.notifs.length==0) updateMore(false);
@@ -94,7 +94,7 @@ if(response.data.notifs.length==0) updateMore(false);
     const readNotifs = () => {
         try {
             dispatch(toggleLoading({isLoading:true}));
-            axios.post(`https://341cde29429e.ngrok-free.app/home/user/readNotifs`, {_id:JSON.parse(localStorage.getItem("data"))._id, jwtToken:localStorage.getItem("token")})
+            axios.post(`https://instileaks.onrender.com/home/user/readNotifs`, {_id:JSON.parse(localStorage.getItem("data"))._id, jwtToken:localStorage.getItem("token")})
             .then(response => {
                 dispatch(toggleLoading({isLoading:false}));
                 if(response.data.status==200) {
@@ -120,7 +120,7 @@ if(response.data.notifs.length==0) updateMore(false);
 
     const loadNotifs = async() => {
 
-        let response = await axios.get(`https://341cde29429e.ngrok-free.app/home/user/getNotifs?page=${page+1}&_id=${JSON.parse(localStorage.getItem("data"))._id}&jwtToken=${localStorage.getItem("token")}`)
+        let response = await axios.get(`https://instileaks.onrender.com/home/user/getNotifs?page=${page+1}&_id=${JSON.parse(localStorage.getItem("data"))._id}&jwtToken=${localStorage.getItem("token")}`)
         if(response.data.status==200) {
             updateNotifs([...notifs, ...response.data.notifs]);
             updateRead(response.data.unread);

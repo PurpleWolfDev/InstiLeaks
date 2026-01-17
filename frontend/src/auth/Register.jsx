@@ -57,7 +57,7 @@ export const Register = () => {
                 name:name, rollNo, password:pass
             };
             updateLoading(true);
-            let resul = await axios.post(`https://341cde29429e.ngrok-free.app/auth/user/createUserAccount`, data);
+            let resul = await axios.post(`https://instileaks.onrender.com/auth/user/createUserAccount`, data);
             let result = resul.data;
             //console.log(result)
             updateLoading(false);

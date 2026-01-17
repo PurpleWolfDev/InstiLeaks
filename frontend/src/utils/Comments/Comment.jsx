@@ -30,7 +30,7 @@ export const Comment = () => {
         try {
             if(commentText.length>0) {
             dispatch(toggleLoading({isLoading:true}));
-            axios.post(`https://341cde29429e.ngrok-free.app/home/user/postComment`, {uId:JSON.parse(localStorage.getItem("data")).uId, jwtToken:localStorage.getItem("token"), postId, commentText:commentText, _id:JSON.parse(localStorage.getItem("data"))._id })
+            axios.post(`https://instileaks.onrender.com/home/user/postComment`, {uId:JSON.parse(localStorage.getItem("data")).uId, jwtToken:localStorage.getItem("token"), postId, commentText:commentText, _id:JSON.parse(localStorage.getItem("data"))._id })
             .then(response => {
                 dispatch(toggleLoading({isLoading:false}));
                 updateComments([ {
@@ -56,7 +56,7 @@ export const Comment = () => {
     useEffect(() => {
         try {
             dispatch(toggleLoading({isLoading:true}));
-            axios.get(`https://341cde29429e.ngrok-free.app/home/user/getComments?page=${page}&postId=${postId}&jwtToken=${localStorage.getItem("token")}`)
+            axios.get(`https://instileaks.onrender.com/home/user/getComments?page=${page}&postId=${postId}&jwtToken=${localStorage.getItem("token")}`)
             .then(response => {
                 dispatch(toggleLoading({isLoading:false}));
 if(response.data.comments.length==0) updateMore(false);
@@ -111,7 +111,7 @@ if(response.data.comments.length==0) updateMore(false);
 
     const loadComments = async() => {
 
-        let response = await axios.get(`https://341cde29429e.ngrok-free.app/home/user/getComments?page=${page+1}&postId=${postId}&jwtToken=${localStorage.getItem("token")}`)
+        let response = await axios.get(`https://instileaks.onrender.com/home/user/getComments?page=${page+1}&postId=${postId}&jwtToken=${localStorage.getItem("token")}`)
         if(response.data.status==200) {
             updateComments([...comments, ...response.data.comments]);
             updatePage(page+1);

@@ -38,7 +38,7 @@ export const Profile = () => {
     const fetchPosts = (pType=false) => {
         try {
             dispatch(toggleLoading({isLoading:true}));
-            axios.post("https://341cde29429e.ngrok-free.app/home/user/getUserPost", {jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem("data")).uId, postType:pType?pType:postType, _id:JSON.parse(localStorage.getItem("data"))._id})
+            axios.post("https://instileaks.onrender.com/home/user/getUserPost", {jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem("data")).uId, postType:pType?pType:postType, _id:JSON.parse(localStorage.getItem("data"))._id})
             .then(response => {
                 dispatch(toggleLoading({isLoading:false}));
                 if(response.data.status==200) {
@@ -99,7 +99,7 @@ export const Profile = () => {
             let t = currentPost;
             updateCurrent(false);
             dispatch(toggleLoading({isLoading:true}));
-            axios.post(`https://341cde29429e.ngrok-free.app/home/user/deletePost`, {postId:t.postId,  jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem("data")).uId,_id:JSON.parse(localStorage.getItem("data"))._id})
+            axios.post(`https://instileaks.onrender.com/home/user/deletePost`, {postId:t.postId,  jwtToken:localStorage.getItem("token"), uId:JSON.parse(localStorage.getItem("data")).uId,_id:JSON.parse(localStorage.getItem("data"))._id})
             .then(response => {
                 dispatch(toggleLoading({isLoading:false}));
                 if(response.data.status==200) {
